@@ -66,34 +66,3 @@ def kenkenSolver(kenken: Kenken) -> Optional[list[list[int]]]:
     solutions = []
     solve(kenken, solutions)
     return solutions
-
-
-# if __name__ == "__main__":
-#     # solution = [[3, 2, 1, 4], [2, 1, 4, 3], [4, 3, 2, 1], [1, 4, 3, 2]]
-#     example = Kenken(
-#         board=[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
-#         cages=[
-#             Cage(cells={Cell(x=2, y=2)}, operation="=", target=2),
-#             Cage(
-#                 cells={Cell(x=0, y=1), Cell(x=1, y=1), Cell(x=2, y=1), Cell(x=0, y=2)},
-#                 operation="*",
-#                 target=32,
-#             ),
-#             Cage(cells={Cell(x=1, y=0), Cell(x=0, y=0)}, operation="-", target=1),
-#             Cage(
-#                 cells={Cell(x=2, y=3), Cell(x=1, y=2), Cell(x=1, y=3), Cell(x=0, y=3)},
-#                 operation="+",
-#                 target=11,
-#             ),
-#             Cage(
-#                 cells={Cell(x=3, y=1), Cell(x=3, y=2), Cell(x=2, y=0), Cell(x=3, y=0)},
-#                 operation="+",
-#                 target=9,
-#             ),
-#             Cage(cells={Cell(x=3, y=3)}, operation="=", target=2),
-#         ],
-#     )
-
-#     solutions = kenkenSolver(example)
-
-#     print(solutions)

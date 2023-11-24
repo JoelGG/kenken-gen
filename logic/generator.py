@@ -84,7 +84,7 @@ def makeCage(kenken: Kenken, freeCell: Cell) -> Cage:
         cells.add(chosen)
         cageNeighbors = validMultiNeighbors(kenken, cells).difference(cells)
 
-    validOps = validOperations(len(cells))
+    validOps = validOperations(kenken.board, cells)
     op = random.choice(list(validOps))
     target = makeTarget(kenken, cells, op)
     return Cage(cells=cells, operation=op, target=target)
@@ -115,11 +115,21 @@ def makeTarget(kenken: Kenken, cells: set[Cell], operation: str):
     return target
 
 
-def validOperations(i: int) -> set[str]:
-    if i == 1:
+def validOperations(board: list[list[int]], cells: set[Cell]) -> set[str]:
+    n = len(cells)
+    if n == 1:
         return set(["="])
-    if i == 2:
-        return set(["+", "-", "*", "/"])
+    if n == 2:
+        ordered = list(cells)
+        larger = max(
+            board[ordered[0].y][ordered[0].x], board[ordered[1].y][ordered[1].x]
+        )
+        smaller = min(
+            board[ordered[0].y][ordered[0].x], board[ordered[1].y][ordered[1].x]
+        )
+        if larger % smaller == 0:
+            return set(["+", "-", "*", "/"])
+        return set(["+", "-", "*"])
     else:
         return set(["+", "*"])
 

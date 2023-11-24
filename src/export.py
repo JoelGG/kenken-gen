@@ -3,6 +3,8 @@ from copy import deepcopy
 import dataclasses
 import datetime
 import json
+
+import tqdm
 import logic
 from logic.model import Kenken
 
@@ -13,25 +15,26 @@ def main(args):
     with open(file_name, "w+") as f:
         puzzle_count = 0
         output = {"puzzles": []}
-        while puzzle_count < args.num_puzzles:
-            print(puzzle_count)
-            # generate a random puzzle with two freebies
-            # TODO: make this configurable
-            puzzle = logic.generate(args.size, 2)
-            solutions = logic.kenkenSolver(
-                Kenken([[0] * args.size for _ in range(args.size)], puzzle.cages)
-            )
+        with tqdm.tqdm(total=args.num_puzzles) as pbar:
+            while puzzle_count < args.num_puzzles:
+                # generate a random puzzle with two freebies
+                # TODO: make this configurable
+                puzzle = logic.generate(args.size, 2)
+                solutions = logic.kenkenSolver(
+                    Kenken([[0] * args.size for _ in range(args.size)], puzzle.cages)
+                )
 
-            # check that there is only one solution
-            if solutions and len(solutions) == 1:
-                puzzle_dict = dataclasses.asdict(puzzle, dict_factory=factory)
+                # check that there is only one solution
+                if solutions and len(solutions) == 1:
+                    puzzle_dict = dataclasses.asdict(puzzle, dict_factory=factory)
 
-                # add a date to each puzzle so that a user can complete one puzzle each day
-                # TODO: make start date configurable
-                puzzle_dict["date"] = start_date.strftime("%Y-%m-%d")
-                start_date += datetime.timedelta(days=1)
-                output["puzzles"].append(puzzle_dict)
-                puzzle_count += 1
+                    # add a date to each puzzle so that a user can complete one puzzle each day
+                    # TODO: make start date configurable
+                    puzzle_dict["date"] = start_date.strftime("%Y-%m-%d")
+                    start_date += datetime.timedelta(days=1)
+                    output["puzzles"].append(puzzle_dict)
+                    puzzle_count += 1
+                    pbar.update(1)
         json.dump(output, f)
 
 

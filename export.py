@@ -1,8 +1,10 @@
 import argparse
+from copy import deepcopy
 import dataclasses
 import datetime
 import json
 import logic
+from logic.model import Kenken
 
 
 def main(args):
@@ -11,12 +13,21 @@ def main(args):
     with open(file_name, "w+") as f:
         puzzle_count = 0
         output = {"puzzles": []}
-        print(args.num_puzzles)
         while puzzle_count < args.num_puzzles:
+            print(puzzle_count)
+            # generate a random puzzle with two freebies
+            # TODO: make this configurable
             puzzle = logic.generate(args.size, 2)
-            solutions = logic.kenkenSolver(puzzle)
+            solutions = logic.kenkenSolver(
+                Kenken([[0] * args.size for _ in range(args.size)], puzzle.cages)
+            )
+
+            # check that there is only one solution
             if solutions and len(solutions) == 1:
                 puzzle_dict = dataclasses.asdict(puzzle, dict_factory=factory)
+
+                # add a date to each puzzle so that a user can complete one puzzle each day
+                # TODO: make start date configurable
                 puzzle_dict["date"] = start_date.strftime("%Y-%m-%d")
                 start_date += datetime.timedelta(days=1)
                 output["puzzles"].append(puzzle_dict)
@@ -38,8 +49,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Generate multiple valid kenken_puzzles."
     )
-    parser.add_argument("output_file", type=str, help="File to write to.")
-    parser.add_argument("num_puzzles", type=int, help="Number of puzzles to generate.")
+    parser.add_argument(
+        "--output_file", type=str, default="./output/4x4", help="File to write to."
+    )
+    parser.add_argument(
+        "--num_puzzles", type=int, default=2, help="Number of puzzles to generate."
+    )
     parser.add_argument(
         "--size",
         type=int,

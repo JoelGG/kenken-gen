@@ -19,7 +19,7 @@ def main(args):
             while puzzle_count < args.num_puzzles:
                 # generate a random puzzle with two freebies
                 # TODO: make this configurable
-                puzzle = logic.generate(args.size, 2)
+                puzzle = logic.generate(args.size, args.freebies)
                 solutions = logic.kenkenSolver(
                     Kenken([[0] * args.size for _ in range(args.size)], puzzle.cages)
                 )
@@ -63,6 +63,12 @@ if __name__ == "__main__":
         type=int,
         default=4,
         help="Size of the board. Default is 4.",
+    )
+    parser.add_argument(
+        "--freebies",
+        type=int,
+        default=2,
+        help="Number of freebies to generate. Default is 2.",
     )
     args = parser.parse_args()
     main(args)
